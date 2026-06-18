@@ -18,7 +18,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  // Form Controllers
   final _fullNameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _pincodeController = TextEditingController();
@@ -34,7 +33,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
   double? _latitude;
   double? _longitude;
 
-  // Dropdown options
   final List<String> _countries = ['India'];
   final List<String> _states = [
     'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHHATTISGARH',
@@ -51,7 +49,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
     if (widget.initialData != null) {
       _initializeFormData(widget.initialData!);
     } else {
-        // Pre-fill some data if available
         _loadUserData();
     }
   }
@@ -113,7 +110,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
             _latitude = position.latitude;
             _longitude = position.longitude;
             
-            // Try to match state
             String? mappedState;
             if (placemark.administrativeArea != null) {
                 String adminArea = placemark.administrativeArea!.toUpperCase();
@@ -174,10 +170,8 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
       Map<String, dynamic> result;
       if (widget.initialData != null && widget.initialData!['id'] != null) {
-        // Update existing address
         result = await ApiService.updateUserAddress(userId, widget.initialData!['id'], addressData);
       } else {
-        // Create new address
         result = await ApiService.addUserAddress(userId, addressData);
       }
 
@@ -209,7 +203,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
         backgroundColor: Colors.teal[50], // Light background for app bar
         elevation: 0,
       ),
-      // backgroundColor: Colors.white,
       body: Responsive.centeredWebContainer(
         context,
         maxWidth: 600,
@@ -235,7 +228,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
                     
-                    // Country Dropdown
                     DropdownButtonFormField<String>(
                       value: _selectedCountry,
                       decoration: const InputDecoration(
@@ -247,7 +239,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Full Name
                     TextFormField(
                       controller: _fullNameController,
                       decoration: const InputDecoration(
@@ -258,7 +249,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Mobile Number
                     TextFormField(
                       controller: _mobileController,
                       keyboardType: TextInputType.phone,
@@ -281,15 +271,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     const Text('May be used to assist delivery', style: TextStyle(fontSize: 12, color: Colors.grey)),
                     const SizedBox(height: 24),
 
-                    // Location on Map (Placeholder for now)
-                    // Row(children: [
-                    //   Icon(Icons.location_on, color: Colors.orange),
-                    //   const SizedBox(width: 8),
-                    //   Text('Add location on map', style: TextStyle(color: Colors.blue)),
-                    // ]),
-                    // const SizedBox(height: 16),
 
-                    // Flat/House
                     TextFormField(
                       controller: _flatController,
                       decoration: const InputDecoration(
@@ -300,7 +282,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Area/Street
                     TextFormField(
                       controller: _areaController,
                       decoration: const InputDecoration(
@@ -311,7 +292,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Landmark
                     TextFormField(
                       controller: _landmarkController,
                       decoration: const InputDecoration(
@@ -322,7 +302,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Pincode and City Row
                     Row(
                       children: [
                         Expanded(
@@ -351,7 +330,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // State
                     DropdownButtonFormField<String>(
                       value: _selectedState,
                       decoration: const InputDecoration(
@@ -365,7 +343,6 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
 
                     
-                    // Delivery Instructions
                     ExpansionTile(
                         title: const Text('Delivery instructions (optional)', style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text('Notes, preferences and more'),

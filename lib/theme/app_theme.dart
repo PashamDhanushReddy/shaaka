@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppTheme {
-  // Nature-inspired color palette - punchy but not too bright
   static const Color primaryGreen = Color(0xFF5A8A5A); // Sage green
   static const Color primaryGreenDark = Color(0xFF4A6B4A);
   static const Color primaryGreenLight = Color(0xFF7BA37B);
@@ -220,7 +219,6 @@ class AppTheme {
     );
   }
 
-  // Dark theme colors - maintaining nature vibe
   static const Color darkBackground = Color(0xFF1B1F1B); // Very dark green-tinted
   static const Color darkSurface = Color(0xFF2A2F2A); // Dark surface with green tint
   static const Color darkSurfaceElevated = Color(0xFF333833); // Elevated surface
@@ -230,7 +228,6 @@ class AppTheme {
   static const Color darkTextMedium = Color(0xFFB8BFB8); // Medium text with green tint
   static const Color darkTextDark = Color(0xFF8A918A); // Dark text with green tint
   
-  // Dark mode accent colors - brighter versions for visibility
   static const Color darkPrimaryGreen = Color(0xFF7BA37B); // Brighter sage green
   static const Color darkAccentTerracotta = Color(0xFFE5A68A); // Softer terracotta
   static const Color darkSuccessGreen = Color(0xFF8BC98B); // Brighter success
@@ -437,7 +434,6 @@ class AppTheme {
     );
   }
   
-  // Helper methods to get theme-aware colors
   static Color getBackgroundColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? darkBackground
@@ -475,7 +471,6 @@ class AppTheme {
   }
 }
 
-// Animation durations
 class AppAnimations {
   static const Duration fast = Duration(milliseconds: 200);
   static const Duration medium = Duration(milliseconds: 300);

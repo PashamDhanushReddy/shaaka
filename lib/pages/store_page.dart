@@ -93,7 +93,6 @@ class _StorePageState extends State<StorePage> {
     return _categoryEmojis[category] ?? '📦';
   }
 
-  // Carousel Logic (Keep existing)
   final PageController _carouselController = PageController();
   final PageController _bannerPageController = PageController(); // Auto-scroll full width for banner
 
@@ -230,7 +229,6 @@ class _StorePageState extends State<StorePage> {
           _products = result['data'];
           _filteredProducts = _products;
           
-          // Group products by category
           _categorizedProducts = {};
           for (var product in _products) {
              if (product.category.isNotEmpty) {
@@ -240,7 +238,6 @@ class _StorePageState extends State<StorePage> {
                 _categorizedProducts[product.category]!.add(product);
              }
           }
-          // Re-apply filter if search text exists
           if (_searchController.text.isNotEmpty) {
              _filterProducts(_searchController.text);
           }
@@ -272,14 +269,10 @@ class _StorePageState extends State<StorePage> {
     });
   }
 
-  // Calculate New and Top products
   void _processSpecialCategories() {
-    // New Products: Sort by created_at descending (approximate by ID for now if date parsing is complex, or use ID as proxy)
-    // Assuming higher ID = newer
     List<Product> sortedByNew = List.from(_products)..sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
     _newProducts = sortedByNew.take(5).toList();
 
-    // Top Products: Sort by rating (descending)
     List<Product> sortedByRating = List.from(_products)..sort((a, b) => b.averageRating.compareTo(a.averageRating));
     _topProducts = sortedByRating.take(5).toList();
   }
@@ -361,7 +354,6 @@ class _StorePageState extends State<StorePage> {
 
     return Column(
       children: [
-        // Search Header (Top and Fixed)
         if (!widget.isVendorView)
           Container(
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -472,7 +464,6 @@ class _StorePageState extends State<StorePage> {
             ),
           ),
 
-        // Scrollable Content
         Expanded(
           child: Responsive.centeredWebContainer(
             context,
@@ -480,13 +471,11 @@ class _StorePageState extends State<StorePage> {
               onRefresh: _loadData,
               child: CustomScrollView(
                 slivers: [
-                  // Carousel (Show only if not vendor mode AND not searching)
                 if (!widget.isVendorView && _searchController.text.isEmpty && _topBanners.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Carousel
                         SizedBox(
                           height: 220, // Keep existing carousel height
                           child: Stack(
@@ -554,7 +543,6 @@ class _StorePageState extends State<StorePage> {
                     ),
                   ),
 
-                // If Searching OR Vendor View -> Show Product Grid
                 if (_searchController.text.isNotEmpty || widget.isVendorView)
                    SliverPadding(
                       padding: const EdgeInsets.all(12),
@@ -593,7 +581,6 @@ class _StorePageState extends State<StorePage> {
                         ),
                       ),
                     )
-                // Else -> Show Category Grid
                 else if (!widget.isVendorView)
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
@@ -608,7 +595,6 @@ class _StorePageState extends State<StorePage> {
                         (context, index) {
                           final category = _categorizedProducts.keys.elementAt(index);
                           final products = _categorizedProducts[category]!;
-                          // Use the first product image, or fallback
                           String? imageUrl;
                           if (products.isNotEmpty && products.first.images.isNotEmpty) {
                              imageUrl = products.first.images.first.imageUrl;
@@ -691,22 +677,18 @@ class _StorePageState extends State<StorePage> {
                     ),
                   ),
                   
-                  // Spacer
                   const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
-                  // New Arrivals
                   if (!widget.isVendorView && _newProducts.isNotEmpty)
                     SliverToBoxAdapter(
                       child: _buildHorizontalSection('New Arrivals ✨', _newProducts),
                     ),
 
-                  // Top Rated
                   if (!widget.isVendorView && _topProducts.isNotEmpty)
                     SliverToBoxAdapter(
                       child: _buildHorizontalSection('Top Rated ⭐', _topProducts),
                     ),
 
-                  // Promotional Banners
                   if (!widget.isVendorView && _bottomBanners.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Container(
@@ -740,7 +722,6 @@ class _StorePageState extends State<StorePage> {
                               );
                             },
                           ),
-                          // Indicators
                           Positioned(
                             bottom: 12,
                             left: 0,
@@ -767,7 +748,6 @@ class _StorePageState extends State<StorePage> {
                     ),
                   ),
 
-                  // Divider
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -775,7 +755,6 @@ class _StorePageState extends State<StorePage> {
                     ),
                   ),
 
-                  // Category Rows (Only if not vendor view)
                   if (!widget.isVendorView)
                   for (var category in _categorizedProducts.keys)
                     if (_categorizedProducts[category]!.isNotEmpty)
@@ -796,7 +775,6 @@ class _StorePageState extends State<StorePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Category Banner
         Container(
           margin: const EdgeInsets.fromLTRB(16, 24, 16, 12),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

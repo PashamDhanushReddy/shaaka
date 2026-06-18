@@ -26,11 +26,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late Razorpay _razorpay;
   double _totalAmount = 0.0;
   
-  // Razorpay Keys
   static const String _razorpayKeyId = 'rzp_test_SQJUGMW1QfXb9q';
 
   
-  // For new address form (if needed, or just specific address)
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
   final _stateController = TextEditingController();
@@ -88,21 +86,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
         return;
       }
 
-      // Fetch Addresses (Saved + Profile)
       final addressResult = await ApiService.getUserAddresses(userId);
       
-      // Fetch Profile (just in case we need user details like name) - optional if addressResult has profile addr
       final profileResult = await ApiService.getProfile(userId);
 
-      // Fetch Cart Total if not a direct order
       if (widget.directOrderData == null) {
         final cartResult = await ApiService.getCart(userId);
         if (cartResult['success'] == true) {
           _totalAmount = cartResult['data'].totalPrice;
         }
       } else {
-        // Calculate total for direct order
-        // data contains: product_id, quantity, unit_value. We need price.
         final prodId = widget.directOrderData!['product_id'];
         final prodResult = await ApiService.getProductDetails(prodId);
         if (prodResult['success'] == true) {
@@ -110,10 +103,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
            final qty = widget.directOrderData!['quantity'];
            final uv = widget.directOrderData!['unit_value'];
            
-           // Simulating logic from backend/cart models for direct order total
-           // Check if variant exists or use base price
            _totalAmount = (product.price * qty * uv).toDouble(); 
-           // In a real app, we'd ideally get this total from the previous page or backend
         }
       }
 
@@ -131,14 +121,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
               _savedAddresses = [if (profileAddr != null) profileAddr, ...saved];
               
               if (newSelectedAddress != null) {
-                 // Try to match the newly returned address exactly from the freshly loaded list, or just use the object
                  try {
                      _selectedAddress = _savedAddresses.firstWhere((a) => a['id'] == newSelectedAddress['id']);
                  } catch (e) {
                      _selectedAddress = newSelectedAddress;
                  }
               }
-              // Default select profile address or first default
               else if (_savedAddresses.isNotEmpty) {
                 try {
                   _selectedAddress = _savedAddresses.firstWhere((addr) => addr['is_default'] == true);
@@ -196,7 +184,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (confirm == true) {
       setState(() => _isLoading = true);
       final userId = await StorageService.getUserId();
-      // Ensure ID is valid (int)
       if (address['id'] is int) {
          final result = await ApiService.deleteUserAddress(userId!, address['id']);
          if (result['success'] == true) {
@@ -279,7 +266,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     dynamic result;
     if (widget.directOrderData != null) {
-      // Merge direct order details (product_id, quantity, unit_value)
       orderData.addAll(widget.directOrderData!);
       result = await ApiService.placeDirectOrder(userId, orderData);
     } else {
@@ -300,7 +286,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               onPressed: () {
                 Navigator.of(context).pop(); // Close dialog
                 Navigator.of(context).pop(); // Close Checkout
-                // Navigator.of(context).pop(); // REMOVED: Do not close Cart, let MyOrders sit on top of Home/Cart
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MyOrdersPage(showBackButton: true)),
@@ -324,7 +309,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppTheme.softBeige,
       appBar: AppBar(
         title: const Text('Checkout'),
         elevation: 0,
@@ -392,10 +376,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               onChanged: (val) => setState(() => _selectedAddress = val),
                               activeColor: Colors.green,
                             ),
-                            // Only show actions for saved addresses, not profile default if needed (though API treats all as address objects)
-                            // Assuming 'profile' ID is special or we check if it's deletable.
-                            // The backend returns 'profile_address' separate from 'saved_addresses' usually, but here we merged them.
-                            // Profile address has ID 'profile' which is string, others are int.
                             if (addr['id'] != 'profile') 
                               Padding(
                                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),

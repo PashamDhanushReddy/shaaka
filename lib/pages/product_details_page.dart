@@ -27,15 +27,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
   
   late TabController _tabController;
 
-  // Cart Logic
   CartItem? _cartItem;
   bool _isLoadingCart = false;
 
-  // Similar Products
   List<Product> _similarProducts = [];
   bool _isLoadingSimilar = false;
 
-  // Unit Selection Logic
   double _quantityStep = 1.0;
   String _selectedUnitName = '';
   List<Map<String, dynamic>> _variants = [];
@@ -68,7 +65,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
     _variants = [];
     
     if (_product.variants.isNotEmpty) {
-       // Use User Defined Variants
        _variants = _product.variants.map((v) => {
          'step': v.quantity,
          'name': '${v.quantity} ${v.unit}',
@@ -76,11 +72,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
          'stock': v.stockQuantity,
        }).toList();
        
-       // Sort by quantity for better UX
        _variants.sort((a, b) => (a['step'] as double).compareTo(b['step'] as double));
 
     } else {
-      // Use Standard Calculation Logic
       final unit = _product.unit.toLowerCase();
 
       if (unit == 'kg') {
@@ -152,7 +146,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
       return;
     }
 
-    // Optimistically update UI
     setState(() {
       _isWishlisted = !_isWishlisted;
     });
@@ -164,7 +157,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
         String msg = result['data']['status'] == 'added' ? 'Added to Wishlist' : 'Removed from Wishlist';
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), duration: const Duration(seconds: 1)));
       } else {
-        // Revert optimistically updated state on failure
         setState(() {
           _isWishlisted = !_isWishlisted;
         });
@@ -228,7 +220,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
       return;
     }
 
-    // Check local stock limit including existing cart items
     final currentCartQty = _cartItem?.quantity ?? 0;
     if (currentCartQty + 1 > _currentStock) {
        if (!mounted) return;
@@ -583,7 +574,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        // ── Custom circular white back button ──
         leading: Container(
           margin: const EdgeInsets.only(left: 8),
           decoration: BoxDecoration(
@@ -632,7 +622,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image Gallery
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.45,
               child: Stack(
@@ -678,7 +667,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
                             ),
                           ),
                         ),
-                  // Image indicators
                   if (_product.images.length > 1)
                     Positioned(
                       bottom: 16,
@@ -707,7 +695,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
             ),
 
             
-            // Product Details
             Container(
               color: AppTheme.warmWhite,
               padding: const EdgeInsets.all(20.0),
@@ -730,7 +717,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
                   ),
                   const SizedBox(height: 8),
                   const SizedBox(height: 16),
-                  // Unit Selection Dropdown
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
@@ -809,7 +795,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
               ),
             ),
             
-            // Tabs
             Container(
               color: AppTheme.warmWhite,
               child: TabBar(
@@ -824,12 +809,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
               ),
             ),
 
-            // Tab Content (Dynamic Height)
             AnimatedBuilder(
               animation: _tabController,
               builder: (context, _) {
                  if (_tabController.index == 0) {
-                    // Description Tab
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -850,7 +833,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
                       ),
                     );
                  } else {
-                    // Reviews Tab
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -1014,7 +996,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
               },
             ),
             
-            // Similar Products
             if (_similarProducts.isNotEmpty) ...[
                const SizedBox(height: 24),
                Padding(
@@ -1041,7 +1022,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
                        child: ProductCard(
                          product: product,
                          onTap: () {
-                           // Navigate to detail page of similar product
                            Navigator.push(
                              context, 
                              MaterialPageRoute(

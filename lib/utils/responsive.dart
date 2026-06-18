@@ -39,8 +39,6 @@ class Responsive {
     required Widget child,
     double maxWidth = maxWebWidth,
   }) {
-    // We only restrict width on tablet/desktop.
-    // On mobile, the bounding box width is simply the screen width.
     if (isMobile(context)) {
       return child;
     }

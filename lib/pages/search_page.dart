@@ -86,11 +86,8 @@ class _SearchPageState extends State<SearchPage> {
     final prefs = await SharedPreferences.getInstance();
     List<String> searches = prefs.getStringList('recent_searches') ?? [];
     
-    // Remove if exists to move to top
     searches.remove(query);
-    // Add to top
     searches.insert(0, query);
-    // Keep max 10
     if (searches.length > 10) {
       searches = searches.sublist(0, 10);
     }
@@ -100,7 +97,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _loadTrendingProducts() async {
-    // Fetch top rated products as "Trending"
     final result = await ApiService.getProducts(ordering: '-rating_count', limit: 6);
     if (mounted) {
       setState(() {
@@ -125,7 +121,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -188,7 +183,6 @@ class _SearchPageState extends State<SearchPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Recent Searches
                 if (_recentSearches.isNotEmpty) ...[
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -231,7 +225,6 @@ class _SearchPageState extends State<SearchPage> {
                     const Divider(thickness: 0.5),
                 ],
 
-                // Trending Searches / Top Products
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: const Text('Trending Products',

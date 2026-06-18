@@ -37,7 +37,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         });
       } else {
         setState(() => _isLoading = false);
-        // Handle error
       }
     }
   }
@@ -68,7 +67,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 15),
       );
     } else {
-      // Placed
       return Text(
         'Ordered ${DateFormat('d MMMM').format(order.createdAt)}',
         style: TextStyle(color: Colors.grey[700], fontSize: 14),
@@ -129,7 +127,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // Product Image (Square container)
                             Container(
                               width: 80,
                               height: 80,
@@ -150,7 +147,6 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                             ),
                             const SizedBox(width: 16),
                             
-                            // Details Column
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

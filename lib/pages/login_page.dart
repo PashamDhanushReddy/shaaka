@@ -53,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
       await StorageService.saveUserId(user.id!);
       await StorageService.saveUserCategory(user.category);
       
-      // Check if profile is complete (address is required)
       if (user.addressLine == null || user.addressLine!.isEmpty) {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
@@ -70,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
-        // Navigate to appropriate home 
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
@@ -112,7 +110,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppTheme.softBeige,
       body: Responsive.centeredWebContainer(
         context,
         maxWidth: 600,
@@ -125,7 +122,6 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 40),
-                // Animated Logo/Icon
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.medium,
@@ -164,7 +160,6 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 const SizedBox(height: 32),
-                // Welcome Text with animation
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.medium,
@@ -199,7 +194,6 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 const SizedBox(height: 48),
-                // Mobile Number Field
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.medium,
@@ -240,7 +234,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Password Field
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.medium,
@@ -293,7 +286,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                // Login Button
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.slow,
@@ -314,7 +306,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Register Link
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: AppAnimations.slow,
@@ -360,7 +351,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// Animated Button Widget
 class _AnimatedButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final bool isLoading;

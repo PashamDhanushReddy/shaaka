@@ -18,7 +18,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
   
-  // Controllers
   final _fullNameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -38,7 +37,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Uint8List? _profileImageBytes;
   String? _profileImageUrl;
 
-  // Password Validation State
   bool _hasMinLength = false;
   bool _hasUppercase = false;
   bool _hasLowercase = false;
@@ -119,7 +117,6 @@ class _RegisterPageState extends State<RegisterPage> {
         _otpSent = true;
         _otpController.clear(); // Clear any previous OTP
       });
-      // Show dialog with OTP info
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -210,7 +207,6 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Handle bar
               Container(
                 width: 40, height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
@@ -227,7 +223,6 @@ class _RegisterPageState extends State<RegisterPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // ── Camera ──
                   _imageSourceCard(
                     ctx,
                     icon: Icons.camera_alt_rounded,
@@ -238,7 +233,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       _pickImage(ImageSource.camera);
                     },
                   ),
-                  // ── Gallery ──
                   _imageSourceCard(
                     ctx,
                     icon: Icons.photo_library_rounded,
@@ -305,7 +299,6 @@ class _RegisterPageState extends State<RegisterPage> {
           _profileImageBytes = bytes;
         });
 
-        // Upload image to Cloudinary
         setState(() {
           _isLoading = true;
         });
@@ -397,7 +390,6 @@ class _RegisterPageState extends State<RegisterPage> {
       await StorageService.saveUserId(user.id!);
       await StorageService.saveUserCategory(user.category);
 
-      // Navigate to Profile page to complete profile
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -430,7 +422,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppTheme.softBeige,
       appBar: AppBar(
         title: const Text('Register'),
         elevation: 0,
@@ -444,7 +435,6 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // OTP Section
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
                 duration: AppAnimations.medium,
@@ -625,13 +615,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 24),
-              // Registration Form
               Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Profile Picture
                     TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.0, end: 1.0),
                       duration: AppAnimations.medium,
@@ -800,7 +788,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                     ),
                     const SizedBox(height: 8),
-                    // Password Requirements Checklist
                     Column(
                         children: [
                             _buildPasswordRequirement('At least 8 characters', _hasMinLength),
@@ -905,7 +892,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-// Animated Button Widget (same as login page)
 class _AnimatedButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final bool isLoading;

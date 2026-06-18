@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-// ─────────────────────────────────────────────────────────────────
-//  COLORS
-// ─────────────────────────────────────────────────────────────────
 
 Color _base(BuildContext ctx) =>
     Theme.of(ctx).brightness == Brightness.dark
@@ -20,10 +17,6 @@ Color _card(BuildContext ctx) =>
         ? const Color(0xFF1E1E1E)
         : Colors.white;
 
-// ─────────────────────────────────────────────────────────────────
-//  CORE:  _Shimmer  -  single fast branded sweep across ALL children
-//  Use ONE _Shimmer per page section (not per item) for sync'd sweep
-// ─────────────────────────────────────────────────────────────────
 
 class _Shimmer extends StatelessWidget {
   final Widget child;
@@ -40,9 +33,6 @@ class _Shimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  STAGGERED SLIDE-IN  (wraps a shimmer item for entrance)
-// ─────────────────────────────────────────────────────────────────
 
 class _Stagger extends StatefulWidget {
   final int index;
@@ -92,9 +82,6 @@ class _StaggerState extends State<_Stagger>
       );
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  PRIMITIVE  —  solid coloured block (shimmer colours these)
-// ─────────────────────────────────────────────────────────────────
 
 class _R extends StatelessWidget {
   final double? w;
@@ -126,9 +113,6 @@ class _Circle extends StatelessWidget {
       );
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  PRODUCT CARD SHIMMER
-// ─────────────────────────────────────────────────────────────────
 
 class ProductCardShimmer extends StatelessWidget {
   const ProductCardShimmer({super.key});
@@ -152,18 +136,15 @@ class ProductCardShimmer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Image area
             Expanded(
               flex: 5,
               child: _R(w: double.infinity, h: double.infinity, r: 12),
             ),
             const SizedBox(height: 8),
-            // ── Product name
             _R(w: double.infinity, h: 12, r: 5),
             const SizedBox(height: 5),
             _R(w: 80, h: 12, r: 5),
             const SizedBox(height: 8),
-            // ── Price + add button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,9 +159,6 @@ class ProductCardShimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  PRODUCT GRID SHIMMER  (sliver-based, used inside CustomScrollView)
-// ─────────────────────────────────────────────────────────────────
 
 class ProductGridShimmer extends StatelessWidget {
   final int itemCount;
@@ -206,9 +184,6 @@ class ProductGridShimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  STORE PAGE SHIMMER  (search + banner + categories + grid)
-// ─────────────────────────────────────────────────────────────────
 
 class StoreShimmer extends StatelessWidget {
   const StoreShimmer({super.key});
@@ -218,7 +193,6 @@ class StoreShimmer extends StatelessWidget {
     return CustomScrollView(
       physics: const NeverScrollableScrollPhysics(),
       slivers: [
-        // Search bar
         SliverToBoxAdapter(
           child: _Shimmer(
             child: Container(
@@ -231,7 +205,6 @@ class StoreShimmer extends StatelessWidget {
             ),
           ),
         ),
-        // Hero banner
         SliverToBoxAdapter(
           child: _Shimmer(
             child: Container(
@@ -241,7 +214,6 @@ class StoreShimmer extends StatelessWidget {
             ),
           ),
         ),
-        // "Shop by Category" label
         SliverToBoxAdapter(
           child: _Shimmer(
             child: Padding(
@@ -250,7 +222,6 @@ class StoreShimmer extends StatelessWidget {
             ),
           ),
         ),
-        // 4-column category tiles
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -276,7 +247,6 @@ class StoreShimmer extends StatelessWidget {
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
-        // "New Arrivals" label
         SliverToBoxAdapter(
           child: _Shimmer(
             child: Padding(
@@ -285,16 +255,12 @@ class StoreShimmer extends StatelessWidget {
             ),
           ),
         ),
-        // Product grid
         const ProductGridShimmer(itemCount: 6),
       ],
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  ORDER LIST SHIMMER
-// ─────────────────────────────────────────────────────────────────
 
 class OrderListShimmer extends StatelessWidget {
   final int itemCount;
@@ -325,10 +291,8 @@ class OrderListShimmer extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Thumbnail
                 _R(w: 80, h: 80, r: 10),
                 const SizedBox(width: 14),
-                // Details column
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -338,13 +302,11 @@ class OrderListShimmer extends StatelessWidget {
                       const SizedBox(height: 6),
                       _R(w: 130, h: 12, r: 5),
                       const SizedBox(height: 12),
-                      // Status pill
                       _R(w: 88, h: 24, r: 12),
                     ],
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Chevron
                 _Circle(size: 22),
               ],
             ),
@@ -355,9 +317,6 @@ class OrderListShimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  CART ITEM SHIMMER
-// ─────────────────────────────────────────────────────────────────
 
 class CartItemShimmer extends StatelessWidget {
   final int index;
@@ -385,10 +344,8 @@ class CartItemShimmer extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Product image
               _R(w: 74, h: 74, r: 12),
               const SizedBox(width: 14),
-              // Info + stepper
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -398,7 +355,6 @@ class CartItemShimmer extends StatelessWidget {
                     const SizedBox(height: 6),
                     _R(w: 90, h: 12, r: 5),
                     const SizedBox(height: 14),
-                    // Stepper   [−]  00  [+]
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -413,7 +369,6 @@ class CartItemShimmer extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              // Delete icon
               _Circle(size: 34),
             ],
           ),
@@ -423,9 +378,6 @@ class CartItemShimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  WISHLIST SHIMMER
-// ─────────────────────────────────────────────────────────────────
 
 class WishlistShimmer extends StatelessWidget {
   const WishlistShimmer({super.key});
@@ -447,9 +399,6 @@ class WishlistShimmer extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  PROFILE SHIMMER  — mirrors ProfilePage layout exactly
-// ─────────────────────────────────────────────────────────────────
 
 class ProfileShimmer extends StatelessWidget {
   const ProfileShimmer({super.key});
@@ -466,7 +415,6 @@ class ProfileShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
 
-              // ── Avatar + camera badge ────────────────
               Center(
                 child: SizedBox(
                   width: 130,
@@ -495,7 +443,6 @@ class ProfileShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              // ── Name + role
               Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -508,7 +455,6 @@ class ProfileShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // ── Personal info card
               _card(context,
                 header: 180,
                 child: Column(
@@ -531,7 +477,6 @@ class ProfileShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // ── Address card
               _card(context,
                 header: 90,
                 child: Column(
@@ -558,7 +503,6 @@ class ProfileShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // ── Action buttons
               Row(
                 children: [
                   Expanded(child: _R(h: 48, r: 14)),

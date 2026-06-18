@@ -28,7 +28,6 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = true;
   bool _isEditing = false;
 
-  // Controllers
   final _fullNameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _genderController = TextEditingController();
@@ -113,7 +112,6 @@ class _ProfilePageState extends State<ProfilePage> {
       _selectedCountry = _userProfile!.country;
       _selectedState = _userProfile!.state;
         
-      // Verify values exist in our static list
       if (_selectedCountry != null && !LocationData.countryStateMap.containsKey(_selectedCountry)) {
         _selectedCountry = null;
         _selectedState = null;
@@ -135,7 +133,6 @@ class _ProfilePageState extends State<ProfilePage> {
       }
       _pincodeController.text = _userProfile!.pincode ?? '';
       
-      // Parse location from URL if available
 
     }
   }
@@ -152,7 +149,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Handle bar
               Container(
                 width: 40, height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
@@ -169,7 +165,6 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // ── Camera ──
                   _imageSourceCard(
                     ctx,
                     icon: Icons.camera_alt_rounded,
@@ -180,7 +175,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       _pickImage(ImageSource.camera);
                     },
                   ),
-                  // ── Gallery ──
                   _imageSourceCard(
                     ctx,
                     icon: Icons.photo_library_rounded,
@@ -247,7 +241,6 @@ class _ProfilePageState extends State<ProfilePage> {
           _profileImageBytes = bytes;
         });
 
-        // Upload image to Cloudinary
         setState(() {
           _isLoading = true;
         });
@@ -259,7 +252,6 @@ class _ProfilePageState extends State<ProfilePage> {
         });
 
         if (uploadResult['success'] == true) {
-          // Update profile with new image URL
           if (_userProfile != null) {
             final updateResult = await ApiService.updateProfile(
               _userProfile!.id!,
@@ -326,10 +318,8 @@ class _ProfilePageState extends State<ProfilePage> {
             _latitude = position.latitude;
             _longitude = position.longitude;
 
-            // Set country to India (static for now, but could be dynamic)
             _selectedCountry = 'India';
 
-            // Try to match state
             String? mappedState;
             if (placemark.administrativeArea != null && LocationData.countryStateMap.containsKey(_selectedCountry)) {
                 String adminArea = placemark.administrativeArea!.toUpperCase();
@@ -412,7 +402,6 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
       if (widget.isCompletingProfile) {
-        // Navigate to Login Page
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const LoginPage(),
@@ -507,7 +496,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             return 'Please enter new password';
                           }
                           
-                          // Password validation rules
                           final bool hasMinLength = value.length >= 8;
                           final bool hasUppercase = value.contains(RegExp(r'[A-Z]'));
                           final bool hasLowercase = value.contains(RegExp(r'[a-z]'));
@@ -644,7 +632,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      // backgroundColor: AppTheme.softBeige,
       appBar: AppBar(
         title: Text(widget.isCompletingProfile ? 'Complete Profile' : 'Profile'),
         automaticallyImplyLeading: !widget.isCompletingProfile,
@@ -714,7 +701,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Profile Picture
             TweenAnimationBuilder<double>(
               tween: Tween(begin: 0.0, end: 1.0),
               duration: AppAnimations.medium,
@@ -791,7 +777,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 24),
-            // User Info
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -854,7 +839,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 16),
-            // Address Info
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -1007,7 +991,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: const Text('Cancel'),
                 ),
             ] else ...[
-              // Change Password Button
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: OutlinedButton.icon(
@@ -1026,7 +1009,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              // Logout Button
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: OutlinedButton.icon(

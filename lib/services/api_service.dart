@@ -8,11 +8,12 @@ import '../models/cart_order_models.dart';
 import 'cart_service.dart';
 
 class ApiService {
-  // Change this to your Render backend URL when deployed
+  /// Base URL for the production Render backend.
   static const String baseUrl = 'https://shaaka-33pq.onrender.com/api';
   // For production: static const String baseUrl = 'https://your-backend.onrender.com/api';
 
-  // Request OTP
+  /// Requests an OTP code to be sent to the given [mobileNumber].
+  /// Returns a Map containing a 'success' boolean and 'data'/'error' information.
   static Future<Map<String, dynamic>> requestOTP(String mobileNumber) async {
     try {
       final response = await http.post(
@@ -33,7 +34,8 @@ class ApiService {
     }
   }
 
-  // Verify OTP
+  /// Verifies the [otpCode] provided by the user for the given [mobileNumber].
+  /// On success, this typically returns user status or session data.
   static Future<Map<String, dynamic>> verifyOTP(
       String mobileNumber, String otpCode) async {
     try {
@@ -58,7 +60,8 @@ class ApiService {
     }
   }
 
-  // Register
+  /// Registers a new user with the provided [userData].
+  /// The [userData] map should contain required registration fields (e.g., name, mobile, password).
   static Future<Map<String, dynamic>> register(
       Map<String, dynamic> userData) async {
     try {
@@ -87,7 +90,8 @@ class ApiService {
     }
   }
 
-  // Login
+  /// Authenticates an existing user using their [mobileNumber] and [password].
+  /// On success, returns the `UserProfile` data.
   static Future<Map<String, dynamic>> login(
       String mobileNumber, String password) async {
     try {
@@ -120,7 +124,6 @@ class ApiService {
     }
   }
 
-  // Get Profile
   static Future<Map<String, dynamic>> getProfile(int userId) async {
     try {
       final response = await http.get(
@@ -147,7 +150,6 @@ class ApiService {
     }
   }
 
-  // Upload Image to Cloudinary
   static Future<Map<String, dynamic>> uploadImage(XFile imageFile, {String type = 'profile'}) async {
     try {
       var request = http.MultipartRequest(
@@ -155,7 +157,6 @@ class ApiService {
         Uri.parse('$baseUrl/upload/image/'),
       );
 
-      // Add image file
       final bytes = await imageFile.readAsBytes();
       var multipartFile = http.MultipartFile.fromBytes(
         'image',
@@ -189,7 +190,6 @@ class ApiService {
     }
   }
 
-  // Update Profile
   static Future<Map<String, dynamic>> updateProfile(
       int userId, Map<String, dynamic> userData) async {
     try {
@@ -218,7 +218,6 @@ class ApiService {
     }
   }
 
-  // Change Password
   static Future<Map<String, dynamic>> changePassword(
       int userId, String currentPassword, String newPassword) async {
     try {
@@ -249,9 +248,7 @@ class ApiService {
       };
     }
   }
-  // --- PRODUCT API ---
 
-  // Add Product
   static Future<Map<String, dynamic>> addProduct(Map<String, dynamic> productData) async {
     try {
       final response = await http.post(
@@ -279,7 +276,6 @@ class ApiService {
     }
   }
 
-  // Update Product
   static Future<Map<String, dynamic>> updateProduct(int productId, Map<String, dynamic> productData) async {
     try {
       final response = await http.put(
@@ -307,7 +303,6 @@ class ApiService {
     }
   }
 
-  // Delete Product
   static Future<Map<String, dynamic>> deleteProduct(int productId) async {
     try {
       final response = await http.delete(
@@ -333,7 +328,6 @@ class ApiService {
     }
   }
 
-  // Get All Products (Global Market)
   static Future<Map<String, dynamic>> getProducts({String? query, String? ordering, int? limit}) async {
     try {
       String url = '$baseUrl/products/';
@@ -381,7 +375,6 @@ class ApiService {
     }
   }
 
-  // Get Vendor Products
   static Future<Map<String, dynamic>> getVendorProducts(int vendorId) async {
     try {
       final response = await http.get(
@@ -410,7 +403,6 @@ class ApiService {
     }
   }
 
-  // Get Product Details
   static Future<Map<String, dynamic>> getProductDetails(int productId) async {
       try {
       final response = await http.get(
@@ -437,9 +429,7 @@ class ApiService {
     }
   }
 
-  // --- REVIEWS API ---
 
-  // Get Product Reviews
   static Future<Map<String, dynamic>> getProductReviews(int productId) async {
     try {
       final response = await http.get(
@@ -468,7 +458,6 @@ class ApiService {
     }
   }
 
-  // Add Review
   static Future<Map<String, dynamic>> addReview(int productId, Map<String, dynamic> reviewData) async {
      try {
       final response = await http.post(
@@ -496,7 +485,6 @@ class ApiService {
     }
   }
 
-  // Update Review
   static Future<Map<String, dynamic>> updateReview(int reviewId, Map<String, dynamic> reviewData) async {
      try {
       final response = await http.put(
@@ -524,7 +512,6 @@ class ApiService {
     }
   }
 
-  // Delete Review
   static Future<Map<String, dynamic>> deleteReview(int reviewId) async {
      try {
       final response = await http.delete(
@@ -549,7 +536,6 @@ class ApiService {
       };
     }
   }
-    // --- CART API ---
 
   static Future<Map<String, dynamic>> getCart(int userId) async {
     try {
@@ -699,7 +685,6 @@ class ApiService {
     }
   }
 
-  // --- ORDERS API ---
 
   static Future<Map<String, dynamic>> placeOrder(int userId, Map<String, dynamic> orderData) async {
     try {
@@ -821,7 +806,6 @@ class ApiService {
       try {
         decodedBody = jsonDecode(response.body);
       } catch (e) {
-        // Backend didn't return JSON (probably an HTML error page, e.g., 404 or 502)
         return {
           'success': false,
           'error': 'Server error: ${response.statusCode}. (The API might still be deploying)',
@@ -847,7 +831,6 @@ class ApiService {
     }
   }
 
-  // --- AUTO SCROLL IMAGES ---
   static Future<Map<String, dynamic>> getAutoScrollImages() async {
     try {
       final response = await http.get(
@@ -875,7 +858,6 @@ class ApiService {
     }
   }
 
-  // --- ADDRESS API ---
 
   static Future<Map<String, dynamic>> getUserAddresses(int userId) async {
     try {
@@ -982,7 +964,6 @@ class ApiService {
     }
   }
 
-  // --- DONATIONS API ---
 
   static Future<Map<String, dynamic>> createDonation(
       int userId, Map<String, String> fields, XFile? image) async {
@@ -990,20 +971,16 @@ class ApiService {
       final uri = Uri.parse('$baseUrl/donations/create/$userId/');
       final request = http.MultipartRequest('POST', uri);
 
-      // Add fields
       fields.forEach((key, value) {
         request.fields[key] = value;
       });
 
-      // Add image if exists (for item_image or payment_screenshot)
       if (image != null) {
-        // Determine field name based on donation type
         String fieldName = 'item_image'; // Default
         if (fields['donation_type'] == 'Money') {
           fieldName = 'payment_screenshot';
         }
         
-        // Infer content type roughly or just let it be octet-stream/inferred by server
         request.files.add(
           await http.MultipartFile.fromPath(
             fieldName,
@@ -1034,7 +1011,6 @@ class ApiService {
     }
   }
 
-  // --- WISHLIST API ---
 
   static Future<Map<String, dynamic>> getWishlist(int userId) async {
     try {

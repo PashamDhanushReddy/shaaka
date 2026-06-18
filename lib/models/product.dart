@@ -122,6 +122,5 @@ class Product {
     );
   }
   
-  // Helper to get first image or null
   String? get firstImageUrl => images.isNotEmpty ? images.first.imageUrl : null;
 }

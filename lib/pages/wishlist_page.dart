@@ -55,7 +55,6 @@ class _WishlistPageState extends State<WishlistPage> {
         builder: (context) => ProductDetailsPage(product: product),
       ),
     );
-    // Reload wishlist when returning, in case an item was removed
     _loadWishlist();
   }
 

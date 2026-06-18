@@ -33,11 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
       _isDarkMode = value;
     });
     await StorageService.setDarkMode(value);
-    // Notify main app to update theme
     if (onThemeUpdateCallback != null) {
       onThemeUpdateCallback!(value);
     }
-    // Show success message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -141,7 +139,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            // Future settings can be added here
             TweenAnimationBuilder<double>(
               tween: Tween(begin: 0.0, end: 1.0),
               duration: AppAnimations.medium,

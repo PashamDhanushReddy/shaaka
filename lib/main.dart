@@ -13,10 +13,8 @@ import 'services/permission_service.dart';
 
 import 'package:flutter/services.dart';
 
-// Global key for Navigator state
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// Global callback for theme updates
 void Function(bool)? onThemeUpdateCallback;
 
 void main() {
@@ -44,7 +42,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadThemePreference();
-    // Set global callback
     onThemeUpdateCallback = _updateTheme;
   }
 
@@ -78,7 +75,6 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
 
-      // 🔥 FORCE BACKGROUND TRANSPARENT FOR ANIMATION
       theme: AppTheme.lightTheme.copyWith(
         scaffoldBackgroundColor: Colors.transparent,
       ),
@@ -120,7 +116,6 @@ class _AuthCheckState extends State<AuthCheck> {
   }
 
   Future<void> _checkSession() async {
-    // Request permissions before proceeding
     await PermissionService.requestAppPermissions();
 
     final userId = await StorageService.getUserId();
@@ -129,7 +124,6 @@ class _AuthCheckState extends State<AuthCheck> {
     if (!mounted) return;
 
     if (userId != null && userCategory != null) {
-      // User is logged in, navigate to appropriate home
       Widget homePage;
       switch (userCategory) {
         case 'Customer':
@@ -148,7 +142,6 @@ class _AuthCheckState extends State<AuthCheck> {
         MaterialPageRoute(builder: (context) => homePage),
       );
     } else {
-      // User not logged in, go to login
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );

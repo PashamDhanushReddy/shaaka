@@ -51,7 +51,6 @@ class _CartPageState extends State<CartPage> {
           });
         } else {
           setState(() {
-            // Cart might be empty/not created yet, which is fine
              if (result['error'].toString().contains('not found')) {
                _cart = null; 
              } else {
@@ -74,7 +73,6 @@ class _CartPageState extends State<CartPage> {
   Future<void> _updateQuantity(CartItem item, double newQuantity) async {
     if (newQuantity < 0) return;
 
-    // Optimistic update? No, let's wait for server to be safe
     final userId = await StorageService.getUserId();
     if (userId == null) return;
 
@@ -117,7 +115,6 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppTheme.softBeige,
       appBar: AppBar(
         title: const Text('My Cart'),
         elevation: 0,
@@ -235,7 +232,6 @@ class _CartPageState extends State<CartPage> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        // Image
                                         Container(
                                           width: 70,
                                           height: 70,
@@ -261,7 +257,6 @@ class _CartPageState extends State<CartPage> {
                                           ),
                                         ),
                                         const SizedBox(width: 12),
-                                        // Details
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -425,7 +420,6 @@ class _CartPageState extends State<CartPage> {
                             },
                           ),
                         ),
-                        // Summary
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
@@ -501,7 +495,6 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-// Animated Button Widget
 class _AnimatedButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final bool isLoading;

@@ -83,7 +83,6 @@ class _HomeWomenMerchantPageState extends State<HomeWomenMerchantPage> {
         return true;
       },
       child: Scaffold(
-        // backgroundColor: AppTheme.softBeige,
         appBar: AppBar(
           title: Row(
             children: [

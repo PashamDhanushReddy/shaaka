@@ -22,8 +22,6 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
     super.initState();
     _initConnectivity();
 
-    // Subscribe to connectivity changes
-    // v5.0.0 uses Stream<List<ConnectivityResult>>
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
@@ -50,15 +48,11 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
   }
 
   void _updateConnectionStatus(List<ConnectivityResult> result) {
-      // v5 returns a list. If any is not none, we are good.
-      // Usually mobile, wifi or ethernet.
-      // If list contains any valid connection, we are online.
       
       bool isOnline = result.any((r) => r != ConnectivityResult.none);
       
       setState(() {
         _connectionStatus = isOnline ? ConnectivityResult.wifi : ConnectivityResult.none;
-        // Simplified status tracking. We just care if online or not.
       });
   }
   

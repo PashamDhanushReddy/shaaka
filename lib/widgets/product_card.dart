@@ -27,12 +27,10 @@ class _ProductCardState extends State<ProductCard> {
   double get _lowestPrice {
     final product = widget.product;
 
-    // If product has explicit variants, find the minimum price
     if (product.variants.isNotEmpty) {
       return product.variants.map((v) => v.price).reduce((a, b) => a < b ? a : b);
     }
 
-    // Otherwise compute standard unit prices and find the minimum
     final unit = product.unit.toLowerCase();
     final basePrice = product.price;
 
@@ -102,7 +100,6 @@ class _ProductCardState extends State<ProductCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Image Area
             Expanded(
               child: AspectRatio(
                 aspectRatio: 1.0,
@@ -135,7 +132,6 @@ class _ProductCardState extends State<ProductCard> {
                               ),
                         ),
                        ),
-                       // Stock Badge (if needed, e.g. Out of stock)
                        if (widget.product.stockQuantity == 0)
                           Positioned(
                             top: 4,
@@ -158,7 +154,6 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
             const SizedBox(height: 6),
-            // Info Area
             Text(
               widget.product.name,
               textAlign: TextAlign.center,
@@ -171,7 +166,6 @@ class _ProductCardState extends State<ProductCard> {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            // Price and Add Button row
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -188,7 +182,6 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                  ),
                  const SizedBox(width: 6),
-                 // Add Button / Edit Button
                  if (widget.onEdit != null)
                    InkWell(
                      onTap: widget.onEdit,

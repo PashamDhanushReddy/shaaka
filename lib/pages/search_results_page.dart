@@ -23,7 +23,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   bool _isLoading = true;
   String? _error;
   
-  // Filter and Sort state
   String _sortBy = 'Relevance';
   String? _selectedCategory;
   double? _minPrice;
@@ -141,17 +140,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   void _applyFiltersAndSort() {
     List<Product> filtered = List.from(_products);
     
-    // Apply category filter
     if (_selectedCategory != null) {
       filtered = filtered.where((p) => p.category == _selectedCategory).toList();
     }
     
-    // Apply stock filter
     if (_inStockOnly == true) {
       filtered = filtered.where((p) => p.stockQuantity > 0).toList();
     }
     
-    // Apply price filter
     if (_minPrice != null) {
       filtered = filtered.where((p) => p.price >= _minPrice!).toList();
     }
@@ -159,7 +155,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       filtered = filtered.where((p) => p.price <= _maxPrice!).toList();
     }
     
-    // Apply sort
     switch (_sortBy) {
       case 'Price: Low to High':
         filtered.sort((a, b) => a.price.compareTo(b.price));
@@ -171,11 +166,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         filtered.sort((a, b) => b.averageRating.compareTo(a.averageRating));
         break;
       case 'Newest First':
-        // Assuming products with higher IDs are newer
         filtered.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
         break;
       default:
-        // Relevance - keep original order
         break;
     }
     
@@ -223,7 +216,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   ),
                   const SizedBox(height: 24),
                   
-                  // Category Filter
                   Text(
                     'Category',
                     style: Theme.of(context).textTheme.titleMedium,
@@ -252,7 +244,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   ),
                   const SizedBox(height: 20),
                   
-                  // Price Range
                   Text(
                     'Price Range (₹)',
                     style: Theme.of(context).textTheme.titleMedium,
@@ -307,7 +298,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   ),
                   const SizedBox(height: 20),
                   
-                  // Stock Filter
                   SwitchListTile(
                     title: const Text('In Stock Only'),
                     value: tempInStock ?? false,
@@ -319,7 +309,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   ),
                   const SizedBox(height: 24),
                   
-                  // Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -492,7 +481,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       ),
       body: Column(
         children: [
-          // Filter and Sort Bar
           Container(
             color: Theme.of(context).cardColor,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -617,7 +605,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             ),
           ),
           
-          // Results
           Expanded(
             child: _isLoading
                 ? Center(
@@ -702,11 +689,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           )
                         : LayoutBuilder(
                             builder: (context, constraints) {
-                              // Calculate responsive aspect ratio based on screen size
                               final screenWidth = constraints.maxWidth;
                               final isSmallScreen = screenWidth < 360;
                               final isVerySmallScreen = screenWidth < 320;
-                              // Adjust aspect ratio to prevent overflow - larger ratio = more height
                               double aspectRatio;
                               if (isVerySmallScreen) {
                                 aspectRatio = 0.58; // More height for very small screens

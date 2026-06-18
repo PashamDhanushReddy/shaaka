@@ -19,7 +19,6 @@ class _DonationsPageState extends State<DonationsPage> {
   final List<String> _donationTypes = ['Food', 'Clothes', 'Money', 'Education'];
   bool _isLoading = false;
 
-  // Controllers
   final _itemNameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -29,7 +28,6 @@ class _DonationsPageState extends State<DonationsPage> {
   final _amountController = TextEditingController();
   final _messageController = TextEditingController();
 
-  // Education Controllers
   final _nameController = TextEditingController();
   final _professionController = TextEditingController();
   final _subjectController = TextEditingController();
@@ -163,9 +161,6 @@ class _DonationsPageState extends State<DonationsPage> {
       fields['message'] = _messageController.text.trim();
     }
 
-    // Pass null image for Education as it's not strictly required in the UI flow (unless we want a profile pic?)
-    // The previous code required image for everything. I relaxed it for Education above.
-    // If API expects image, we might need to handle it. Assuming generic donation endpoint handles optional image.
     final result = await ApiService.createDonation(userId, fields, _selectedType == 'Education' ? null : _selectedImage);
 
     if (!mounted) return;
@@ -180,7 +175,6 @@ class _DonationsPageState extends State<DonationsPage> {
         ),
       );
       
-      // Reset form instead of popping
       _formKey.currentState?.reset();
       _itemNameController.clear();
       _descriptionController.clear();
@@ -224,7 +218,6 @@ class _DonationsPageState extends State<DonationsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Donation Type Dropdown
               DropdownButtonFormField<String>(
                 value: _selectedType,
                 decoration: const InputDecoration(labelText: 'I want to donate', border: OutlineInputBorder()),
@@ -292,7 +285,6 @@ class _DonationsPageState extends State<DonationsPage> {
                    keyboardType: TextInputType.emailAddress,
                  ),
                  const SizedBox(height: 16),
-                 // Image Upload
                  GestureDetector(
                    onTap: _pickImage,
                    child: Container(
@@ -333,7 +325,6 @@ class _DonationsPageState extends State<DonationsPage> {
                     validator: (v) => v!.isEmpty ? 'Required' : null,
                   ),
                   const SizedBox(height: 16),
-                  // TimeSlot Picker
                   InkWell(
                     onTap: () => _selectDateTime(context),
                     child: InputDecorator(
@@ -382,8 +373,6 @@ class _DonationsPageState extends State<DonationsPage> {
                   ),
 
               ] else ...[
-                 // Money Donation
-                 // QR Code placeholder
                  Center(
                    child: Column(
                      children: [

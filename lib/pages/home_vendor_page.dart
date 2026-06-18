@@ -84,7 +84,6 @@ class _HomeVendorPageState extends State<HomeVendorPage> {
         return true;
       },
       child: Scaffold(
-        // backgroundColor: AppTheme.softBeige,
         appBar: AppBar(
           title: Row(
             children: [

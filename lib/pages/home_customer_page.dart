@@ -30,7 +30,6 @@ class _HomeCustomerPageState extends State<HomeCustomerPage> {
   Future<void> _fetchInitialCart() async {
     final userId = await StorageService.getUserId();
     if (userId != null) {
-      // Calling getCart automatically updates CartService.cartItemCountNotifier
       await ApiService.getCart(userId);
     }
   }
@@ -83,7 +82,6 @@ class _HomeCustomerPageState extends State<HomeCustomerPage> {
         return true;
       },
       child: Scaffold(
-        // backgroundColor: AppTheme.softBeige,
         appBar: AppBar(
           title: Row(
             children: [

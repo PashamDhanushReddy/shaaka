@@ -69,7 +69,6 @@ class _AddProductPageState extends State<AddProductPage> {
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
-  // Variant Logic
   bool _hasVariants = false;
   List<Map<String, dynamic>> _variantsList = []; // {quantity, unit, price}
 
@@ -83,17 +82,14 @@ class _AddProductPageState extends State<AddProductPage> {
       _descriptionController.text = widget.product!.description ?? '';
       _selectedUnit = widget.product!.unit;
       
-      // Ensure category exists in list, else default or add
       if (_categories.contains(widget.product!.category)) {
         _selectedCategory = widget.product!.category;
       }
       
-      // Load existing images
       for (var img in widget.product!.images) {
           _existingImageUrls.add(img.imageUrl);
       }
       
-      // Load Variants
       if (widget.product!.variants.isNotEmpty) {
         _hasVariants = true;
         for (var v in widget.product!.variants) {
@@ -130,7 +126,6 @@ class _AddProductPageState extends State<AddProductPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Handle bar
               Container(
                 width: 40, height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
@@ -145,7 +140,6 @@ class _AddProductPageState extends State<AddProductPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // ─ Camera ─
                   _sourceOption(
                     ctx,
                     icon: Icons.camera_alt_rounded,
@@ -162,7 +156,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       }
                     },
                   ),
-                  // ─ Gallery ─
                   _sourceOption(
                     ctx,
                     icon: Icons.photo_library_rounded,
@@ -232,7 +225,6 @@ class _AddProductPageState extends State<AddProductPage> {
   Future<void> _addProduct() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // Validate variants existence if tiered pricing is selected
     if (_hasVariants && _variantsList.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please add at least one variant'), backgroundColor: Colors.red));
@@ -257,11 +249,9 @@ class _AddProductPageState extends State<AddProductPage> {
       return;
     }
 
-    // 1. Upload Images First (Parallel)
     print("Starting image uploads...");
     List<String> newImageUrls = [];
     
-    // Create futures for all uploads
     List<Future<Map<String, dynamic>>> uploadFutures = _selectedImages
         .map((image) => ApiService.uploadImage(image, type: 'product'))
         .toList();
@@ -280,14 +270,10 @@ class _AddProductPageState extends State<AddProductPage> {
       }
       print("All images uploaded successfully. URLs: $newImageUrls");
 
-      // Combine existing and new images
       final allImageUrls = [..._existingImageUrls, ...newImageUrls];
 
-      // 2. Add Product with Image URLs
-      // Determine price safely
       double price;
       if (_hasVariants) {
-        // Use the price of the first variant as the display price
         price = _variantsList.isNotEmpty 
             ? (_variantsList.first['price'] is num ? (_variantsList.first['price'] as num).toDouble() : 0.0) 
             : 0.0;
@@ -405,8 +391,6 @@ class _AddProductPageState extends State<AddProductPage> {
               
               const SizedBox(height: 16),
 
-              // Pricing Toggle
-              // Pricing Type Selection
               const Text('Pricing Type: ', style: TextStyle(fontWeight: FontWeight.bold)),
               Row(
                 children: [
@@ -461,7 +445,6 @@ class _AddProductPageState extends State<AddProductPage> {
                     ],
                   ),
               ] else ...[
-                  // Variants UI
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -553,7 +536,6 @@ class _AddProductPageState extends State<AddProductPage> {
                                            },
                                          ),
                                        ),
-                                       // Placeholder to align with the delete button above
                                        const SizedBox(width: 48),
                                      ],
                                    ),
@@ -575,8 +557,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       ],
                     ),
                   ),
-                  // Hidden Price Controller for base price logic if needed, 
-                  // or we enforce at least one variant and use its price.
                   if (_variantsList.isEmpty)
                      const Padding(
                        padding: EdgeInsets.only(top: 4.0),
@@ -612,7 +592,6 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 24),
               
-              // Image Picker
               const Text('Images', style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               SizedBox(
@@ -620,7 +599,6 @@ class _AddProductPageState extends State<AddProductPage> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    // Existing Images
                     ..._existingImageUrls.asMap().entries.map((entry) {
                       int idx = entry.key;
                       String url = entry.value;
@@ -655,7 +633,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       );
                     }).toList(),
                     
-                    // New Selected Images
                     ..._selectedImages.asMap().entries.map((entry) {
                       int idx = entry.key;
                       XFile file = entry.value;
@@ -690,7 +667,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       );
                     }).toList(),
                     
-                    // Add Button
                     GestureDetector(
                       onTap: _showImageSourceSheet,
                       child: Container(

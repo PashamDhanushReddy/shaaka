@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
@@ -40,32 +41,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Future<void> _cancelOrder() async {
-    // Show confirmation dialog early
-    final bool? confirm = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cancel Order'),
-          content: const Text('Are you sure you want to cancel this order?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes, Cancel'),
-            ),
-          ],
-        );
-      },
+    final firstItem = _order!.items.isNotEmpty ? _order!.items.first : null;
+    final itemName = firstItem != null 
+        ? '${firstItem.productName}${_order!.items.length > 1 ? ' + ${_order!.items.length - 1} more' : ''}'
+        : 'Order #${_order!.id}';
+
+    final String? cancelReason = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (context) => CancelOrderScreen(itemName: itemName),
+      ),
     );
 
-    if (confirm != true) return;
+    if (cancelReason == null) return;
 
     setState(() => _isLoading = true);
 
@@ -78,7 +65,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       return;
     }
 
-    final result = await ApiService.cancelOrder(userId, widget.orderId);
+    final result = await ApiService.cancelOrder(userId, widget.orderId, reason: cancelReason);
     
     if (mounted) {
       if (result['success'] == true) {
@@ -107,7 +94,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    // Determine status color
     Color statusColor;
     Color statusBgColor;
     if (_order!.status == 'Delivered') {
@@ -132,7 +118,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status
             Container(
               padding: const EdgeInsets.all(16),
               width: double.infinity,
@@ -157,7 +142,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             const SizedBox(height: 24),
 
-            // Items
             Text('Items Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor)),
             const SizedBox(height: 12),
             Container(
@@ -178,7 +162,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Product Image
                         Container(
                           width: 60,
                           height: 60,
@@ -198,7 +181,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               : const Icon(Icons.shopping_bag, color: Colors.grey, size: 30),
                         ),
                         const SizedBox(width: 12),
-                        // Details Column
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +209,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             const SizedBox(height: 24),
             
-            // Payment Summary
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -261,7 +242,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             const SizedBox(height: 24),
             
-            // Shipping Address
             Text('Shipping Address', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor)),
             const SizedBox(height: 12),
             Container(
@@ -284,7 +264,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             const SizedBox(height: 32),
 
-            // Cancel Order Button
             if (_order!.status == 'Placed' || _order!.status == 'Processing')
               SizedBox(
                 width: double.infinity,
@@ -303,6 +282,132 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ),
             
             const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CancelOrderScreen extends StatefulWidget {
+  final String itemName;
+  const CancelOrderScreen({super.key, required this.itemName});
+
+  @override
+  State<CancelOrderScreen> createState() => _CancelOrderScreenState();
+}
+
+class _CancelOrderScreenState extends State<CancelOrderScreen> {
+  final TextEditingController _reasonController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _selectedReason;
+
+  final List<String> _cancelReasons = [
+    'Ordered by mistake',
+    'Found a better price elsewhere',
+    'Delivery is taking too long',
+    'Want to change delivery address',
+    'Want to change payment method',
+    'Ordered the wrong product',
+    'Ordered the wrong quantity',
+    'Product no longer needed',
+    'Duplicate order placed',
+    'Financial reasons / budget constraints',
+    'Purchased from another seller',
+    'Other',
+  ];
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.itemName)),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Cancel Order',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text('Please select a reason for cancellation:'),
+                      const SizedBox(height: 16),
+                      ..._cancelReasons.map((String reason) {
+                        return RadioListTile<String>(
+                          title: Text(reason),
+                          value: reason,
+                          groupValue: _selectedReason,
+                          contentPadding: EdgeInsets.zero,
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedReason = value;
+                              if (value != 'Other') {
+                                _reasonController.text = value ?? '';
+                              } else {
+                                _reasonController.clear();
+                              }
+                            });
+                          },
+                        );
+                      }),
+                      if (_selectedReason == 'Other') ...[
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _reasonController,
+                          decoration: const InputDecoration(
+                            labelText: 'Please specify',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLines: 3,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Reason is required';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: _selectedReason == null ? null : () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).pop(_reasonController.text.trim());
+                    }
+                  },
+                  child: const Text('Submit Cancellation', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ),
           ],
         ),
       ),
