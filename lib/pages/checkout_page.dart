@@ -103,7 +103,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
            final qty = widget.directOrderData!['quantity'];
            final uv = widget.directOrderData!['unit_value'];
            
-           _totalAmount = (product.price * qty * uv).toDouble(); 
+           if (widget.directOrderData!.containsKey('price')) {
+               _totalAmount = (widget.directOrderData!['price'] * qty).toDouble();
+           } else {
+               _totalAmount = (product.price * qty * uv).toDouble(); 
+           }
         }
       }
 
@@ -266,7 +270,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     dynamic result;
     if (widget.directOrderData != null) {
-      orderData.addAll(widget.directOrderData!);
+      final directData = Map<String, dynamic>.from(widget.directOrderData!);
+      directData.remove('price');
+      if (directData.containsKey('unit_value')) {
+        directData['unit_value'] = directData['unit_value'].toString();
+      }
+      if (directData.containsKey('quantity')) {
+        directData['quantity'] = directData['quantity'].toString();
+      }
+      orderData.addAll(directData);
       result = await ApiService.placeDirectOrder(userId, orderData);
     } else {
       result = await ApiService.placeOrder(userId, orderData);

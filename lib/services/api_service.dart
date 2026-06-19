@@ -573,7 +573,7 @@ class ApiService {
         body: jsonEncode({
           'product_id': productId,
           'quantity': quantity,
-          'unit_value': unitValue,
+          'unit_value': unitValue.toString(),
         }),
       );
 
@@ -604,7 +604,7 @@ class ApiService {
         Uri.parse('$baseUrl/cart/$userId/update/$itemId/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'quantity': quantity,
+          'quantity': quantity.toString(),
         }),
       );
 

@@ -343,7 +343,7 @@ def place_direct_order(request, user_id):
             if deduction_quantity > float(product.stock_quantity):
                 return Response({'error': f"Not enough stock for {product.name}"}, status=status.HTTP_400_BAD_REQUEST)
             price_at_purchase = product.price
-            total_amount = product.price * deduction_quantity
+            total_amount = float(product.price) * deduction_quantity
             
             product.stock_quantity = float(product.stock_quantity) - deduction_quantity
             product.save()

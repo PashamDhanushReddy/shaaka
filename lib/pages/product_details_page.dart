@@ -264,19 +264,27 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
       return;
     }
 
-    final directOrderData = {
-      'product_id': _product.id,
-      'quantity': 1.0,
-      'unit_value': _quantityStep,
-    };
+    // The place_direct_order API on the Render backend has a crash for items without variants.
+    // As a workaround, we add the item to the cart and use the standard place_order flow.
+    setState(() => _isLoadingCart = true);
+    final result = await ApiService.addToCart(userId, _product.id, _quantityStep, quantity: 1);
+    setState(() => _isLoadingCart = false);
 
     if (!mounted) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CheckoutPage(directOrderData: directOrderData)
-      )
-    );
+
+    if (result['success'] == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CheckoutPage()
+        )
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to prepare checkout: ${result['error']}'),
+        backgroundColor: Colors.red
+      ));
+    }
   }
 
   Future<void> _showAddReviewDialog() async {
