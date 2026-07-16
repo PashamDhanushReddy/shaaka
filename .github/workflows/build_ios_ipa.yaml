@@ -3,25 +3,32 @@ name: Build iOS IPA
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches:
+      - main
+      - master
 
 jobs:
-  build:
+  build-ios:
     runs-on: macos-14
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - run: flutter pub get
+      - name: Flutter Pub Get
+        run: flutter pub get
 
-      - run: flutter precache --ios
+      - name: Precache iOS
+        run: flutter precache --ios
 
-      - run: flutter build ios --release --no-codesign
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
 
       - name: Create IPA
         run: |
@@ -31,7 +38,8 @@ jobs:
           zip -r ../app.ipa .
           cd ..
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
         with:
           name: ios-app
           path: app.ipa
