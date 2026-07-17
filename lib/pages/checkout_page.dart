@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
 import '../models/user_profile.dart';
@@ -23,7 +24,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   bool _isLoading = true;
   String? _selectedPaymentMethod = 'COD';
   UserProfile? _userProfile;
-  late Razorpay _razorpay;
+  Razorpay? _razorpay;
   double _totalAmount = 0.0;
   
   static const String _razorpayKeyId = 'rzp_test_SQJUGMW1QfXb9q';
@@ -38,14 +39,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void initState() {
     super.initState();
     _loadData();
+    if (Platform.isAndroid) {
     _initializeRazorpay();
+    }
   }
 
   void _initializeRazorpay() {
     _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay?.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
@@ -73,7 +76,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _cityController.dispose();
     _stateController.dispose();
     _pincodeController.dispose();
-    _razorpay.clear(); // Clear razorpay listeners
+    if (Platform.isAndroid) _razorpay?.clear(); // Clear razorpay listeners
     super.dispose();
   }
 
@@ -235,7 +238,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     };
 
     try {
-      _razorpay.open(options);
+      if (Platform.isAndroid) {
+      _razorpay?.open(options);
+    } else {
+      _placeOrderFinal(isPaid: false);
+    }
     } catch (e) {
       debugPrint("Error opening Razorpay: $e");
       setState(() => _isLoading = false);
