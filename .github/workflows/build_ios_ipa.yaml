@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
       - master
+      - main
 
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
       - name: Checkout
@@ -18,8 +18,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: "3.32.8"
           cache: true
+
+      - name: Flutter Version
+        run: flutter --version
 
       - name: Get Packages
         run: flutter pub get
@@ -27,24 +30,12 @@ jobs:
       - name: Precache iOS
         run: flutter precache --ios
 
-      - name: Patch Razorpay iOS Plugin
-        run: |
-          FILE="$HOME/.pub-cache/hosted/pub.dev/razorpay_flutter-1.4.5/ios/Classes/RazorpayDelegate.swift"
-
-          echo "Checking file..."
-          ls -l "$FILE"
-
-          echo "Removing subscribeToAnalyticsEvents..."
-          sed -i '' '/subscribeToAnalyticsEvents/d' "$FILE"
-
-          echo "Patched successfully."
-
       - name: Build iOS
         run: flutter build ios --release --no-codesign
 
       - name: Create IPA
         run: |
-          mkdir Payload
+          mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
           cd Payload
           zip -r ../app.ipa .
