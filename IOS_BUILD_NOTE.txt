@@ -1,0 +1,8 @@
+This archive removes the razorpay_flutter dependency from pubspec.yaml.
+
+IMPORTANT:
+Your Dart code still references Razorpay classes. To successfully build iOS,
+you must also replace those references with a stub or abstraction.
+Removing the dependency alone will otherwise cause Dart compilation errors.
+
+Flutter cannot exclude a plugin from iOS while keeping it in the same pubspec.
