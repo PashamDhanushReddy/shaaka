@@ -5,7 +5,7 @@ import '../models/user_profile.dart';
 import 'my_orders_page.dart';
 import 'address_form_page.dart';
 import '../utils/responsive.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import '../services/razorpay_stub.dart';
 
 
 class CheckoutPage extends StatefulWidget {
@@ -239,6 +239,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
     } catch (e) {
       debugPrint("Error opening Razorpay: $e");
       setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Online payment is not available on this platform. Please select Cash on Delivery.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
     }
   }
 
